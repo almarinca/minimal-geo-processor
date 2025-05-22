@@ -7,3 +7,18 @@ __pycache__/
 
 # Environments
 .venv
+
+### NextJS ###
+# dependencies
+node_modules
+
+
+# next.js
+.next/
+/out/
+
+# production
+/build
+
+# env files (can opt-in for committing if needed)
+.env*
