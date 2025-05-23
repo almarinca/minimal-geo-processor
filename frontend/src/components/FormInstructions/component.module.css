@@ -1,0 +1,22 @@
+.instructions {
+  background-color: #121d2a;
+  border-left: 4px solid #4ea1ff;
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  color: #e2e8f0;
+}
+
+.instructions h2 {
+  margin-top: 0;
+  font-size: 16px;
+  color: #7db9fd;
+}
+
+.instructions ul {
+  padding-left: 16px;
+}
+
+.instructions li {
+  font-size: 14px;
+}

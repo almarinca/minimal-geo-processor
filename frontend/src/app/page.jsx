@@ -1,42 +1,69 @@
+"use client";
 import styles from "./page.module.css";
+import { useEffect, useState } from "react";
 
 import GeoCentroid from "../components/geo/GeoCentroid";
 import WorldMap from "../components/geo/WorldMap/WorldMap";
 import LatitudeLine from "../components/geo/LatitudeLine";
 import LongitudeLine from "../components/geo/LongitudeLine";
 import CoordinateListForm from "../components/CoordinateListForm/CoordinateListForm";
-
-
-const mock_data = {
-    "centroid": { "lat": 37.3825, "lng": -96.1248 },
-    "bounds": {
-        "north": 40.7128,
-        "south": 34.0522*0,
-        "east": -74.0060,
-        "west": -118.2437
-    }
-}
+import { useGeoSummary } from "@/hooks/useGeoSummary";
+import { FormInstructions } from "@/components/FormInstructions/FormInstructions";
 
 
 export default function Home() {
-    const { centroid, bounds } = mock_data
+    const [isClient, setIsClient] = useState(false);
+    const {
+        mutate: mutateGeoSummary,
+        data: geoData,
+        isPending: loadingGeoSummary,
+        error,
+        reset: resetGeoSummary,
+    } = useGeoSummary();
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    function submitGeoPoints(pointList) {
+        const data = {
+            points: pointList
+        }
+        mutateGeoSummary(data)
+    }
 
     return (
         <div className={styles.page}>
             <main className={styles.main}>
-                <CoordinateListForm />
+                <div className={styles.form_container}>
+                    <div className={styles.instructions}>
+                        <FormInstructions />
+                    </div>
+                    <CoordinateListForm
+                        onSubmit={submitGeoPoints}
+                        onReset={resetGeoSummary}
+                    />
+                </div>
                 <div className={styles.geomap_container}>
-                    <WorldMap>
-                        {bounds && (
-                            <>
-                                <LatitudeLine lat={bounds.north} annotation={`Lat=${bounds.north}°`} />
-                                <LatitudeLine lat={bounds.south} annotation={`Lat=${bounds.south}°`} />
-                                <LongitudeLine lng={bounds.east} annotation={`Lng=${bounds.east}°`} />
-                                <LongitudeLine lng={bounds.west} annotation={`Lng=${bounds.west}°`} />
-                            </>
-                        )}
-                        {centroid && (<GeoCentroid coordinates={centroid} annotation={`[${centroid.lat}°, ${centroid.lng}°]`} />)}
-                    </WorldMap>
+                    {!!error && (
+                        <h1>{error.message}</h1>
+                    )}
+                    {/* Conditionally render map to prevent server-client mismatch warnings */}
+                    {!error && isClient && (
+                        <WorldMap>
+                            {(!loadingGeoSummary && geoData?.bounds) && (
+                                <>
+                                    <LatitudeLine lat={geoData.bounds.north} annotation={`Lat=${geoData.bounds.north}°`} />
+                                    <LatitudeLine lat={geoData.bounds.south} annotation={`Lat=${geoData.bounds.south}°`} />
+                                    <LongitudeLine lng={geoData.bounds.east} annotation={`Lng=${geoData.bounds.east}°`} />
+                                    <LongitudeLine lng={geoData.bounds.west} annotation={`Lng=${geoData.bounds.west}°`} />
+                                </>
+                            )}
+                            {(!loadingGeoSummary && geoData?.centroid) && (
+                                <GeoCentroid coordinates={geoData.centroid} annotation={`[${geoData.centroid.lat}°, ${geoData.centroid.lng}°]`} />
+                            )}
+                        </WorldMap>
+                    )}
                 </div>
             </main>
         </div>

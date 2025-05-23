@@ -2,32 +2,46 @@
 import styles from "./component.module.css";
 import { useState } from "react"
 
-export default function CoordinateListForm(props) {
-    const [pointList, setPointList] = useState([{...initial_point}])
+export default function CoordinateListForm({ onSubmit, onReset }) {
+    const [pointList, setPointList] = useState([{ ...initial_point }])
 
-    function onSubmit(event) {
+    function handleSubmit(event) {
         event.preventDefault()
+        onSubmit(pointList)
     }
 
     function resetPoints(event) {
         event.preventDefault()
-        setPointList([{...initial_point}])
+        setPointList([{ ...initial_point }])
+        onReset()
     }
 
     function addNewPoint(pointList) {
         const newPointList = [...pointList]
-        newPointList.push({...initial_point})
+        newPointList.push({ ...initial_point })
         setPointList(newPointList)
     }
 
     function updatePoint(idx, lat, lng) {
         if (
             Number(lat) < -90 || Number(lat) > 90 ||
-            Number(lng) < -180 || Number(lng) > 180
+            Number(lng) < -180 || Number(lng) > 180 ||
+            lat === 'e' || lng === 'e' ||
+            lat === 'E' || lng === 'E'
         ) return
         const newPointList = [...pointList]
         newPointList[idx].lat = lat
         newPointList[idx].lng = lng
+        setPointList(newPointList)
+    }
+
+    function removePoint(idx) {
+        const newPointList = pointList.filter((val, i) => {
+            return i != idx
+        })
+        if (newPointList.length === 0) {
+            newPointList.push({ ...initial_point })
+        }
         setPointList(newPointList)
     }
 
@@ -37,13 +51,13 @@ export default function CoordinateListForm(props) {
 
     function onClickOutCoordinate(idx, lat, lng) {
         const newPointList = [...pointList]
-        newPointList[idx].lat = Number(lat).toFixed(4)
-        newPointList[idx].lng = Number(lng).toFixed(4)
+        newPointList[idx].lat = Number(Number(lat).toFixed(4))
+        newPointList[idx].lng = Number(Number(lng).toFixed(4))
         setPointList(newPointList)
     }
 
     return (
-        <form className={styles.coordinates_form} onSubmit={onSubmit} onReset={resetPoints}>
+        <form className={styles.coordinates_form} onSubmit={handleSubmit} onReset={resetPoints}>
             <div className={styles.point_input_list}>
                 <ul>
                     {pointList.map((point, idx) => (
@@ -72,6 +86,10 @@ export default function CoordinateListForm(props) {
                                 onBlur={() => onClickOutCoordinate(idx, point.lat, point.lng)}
                                 onFocus={onClickInCoordinate}
                             />
+                            <span
+                                className={styles.remove_point_btn}
+                                onClick={() => removePoint(idx)}
+                            >❌</span>
                         </li>
                     ))}
                 </ul>
@@ -85,4 +103,4 @@ export default function CoordinateListForm(props) {
     )
 }
 
-const initial_point = { lat: "0.0000", lng: "0.0000" }
+const initial_point = { lat: 0, lng: 0 }

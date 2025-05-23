@@ -1,6 +1,5 @@
 "use client";
 import styles from "./component.module.css";
-import React, { useEffect, useState } from "react"
 import {
     ComposableMap,
     Geographies,
@@ -13,20 +12,12 @@ const geoUrl =
     "/world_map.json"
 
 export default function WorldMap({ children }) {
-    const [isClient, setIsClient] = useState(false);
-
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
 
     return (
         <div className={styles.map_container}>
             <ComposableMap className={styles.map_chart}>
                 <Sphere stroke={"#2c3640"} />
-                {/* Conditionally render graticule to prevent server-client mismatch warnings */}
-                {isClient && (
-                    <Graticule stroke={"#2c3640"} />
-                )}
+                <Graticule stroke={"#2c3640"} />
                 <Geographies
                     geography={geoUrl}
                     stroke={"#566270"}
