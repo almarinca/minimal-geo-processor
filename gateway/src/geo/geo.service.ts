@@ -9,6 +9,13 @@ import { plainToInstance } from 'class-transformer';
 import { createCacheKey } from 'src/utils/cache-key';
 
 
+/**
+ * Service responsible for processing geographic data.
+ *
+ * This service communicates with a backend API to compute a geographic summary
+ * (including centroid and bounds) for a given set of coordinates.
+ * It also implements caching to optimize repeated requests with identical data.
+ */
 @Injectable()
 export class GeoService {
   private backendUrl: string | undefined;
@@ -21,6 +28,17 @@ export class GeoService {
   }
 
 
+  /**
+   * Processes a list of geographic points to compute a summary.
+   * 
+   * First checks the cache for a previously computed result. If none is found,
+   * it makes a request to the backend service to compute the geographic summary.
+   * The result is validated, cached, and returned.
+   * 
+   * @param data GeoData object containing a list of geographic points.
+   * @returns A Promise that resolves to a GeoSummary object.
+   * @throws HttpException if the backend request fails.
+   */
   async processPoints(data: GeoData) {
     const key = createCacheKey('geo', data);
     const cached = await this.cacheManager.get(key);
