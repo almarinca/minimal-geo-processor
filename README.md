@@ -56,9 +56,9 @@ docker compose down
 
 The default urls that are set in the compose file are:
 
-**Frontend**: `http://localhost:3000`
-**Gateway API**: `http://localhost:3001/geo/summary`
-**Backend API**: `http://localhost:8000/geo/summary`
+- **Frontend**: `http://localhost:3000`
+- **Gateway API**: `http://localhost:3001/geo/summary`
+- **Backend API**: `http://localhost:8000/geo/summary`
 
 You just need to open the frontend in your browser to interact with the app:
 
@@ -70,29 +70,29 @@ You can also interact directly with the backend through the swagger documentatio
 
 ## 🧠 Design Decisions
 
-**End-to-End DTO Validation:** Strong schema across services.
+- **End-to-End DTO Validation:** Strong schema across services.
 Input is validated in the frontend form, in the gateway, and again in the backend for redundancy and proper user feedback.
 Pydantic in Python and Class Validator in NestJS act as DTOs to provide strong runtime safety.
 
-**Response Validation in Gateway**: Checking that backend data matches expected DTO shape avoids leaking malformed or invalid backend responses to clients.
+- **Response Validation in Gateway**: Checking that backend data matches expected DTO shape avoids leaking malformed or invalid backend responses to clients.
 
-**DTO DRY**: In all services, either by reusable Validation Decorators and or model inheritance, to improve clarity and reusability across different DTOs.
+- **DTO DRY**: In all services, either by reusable Validation Decorators and or model inheritance, to improve clarity and reusability across different DTOs.
 
-**HTTP Requests:** Axios is used both in the frontend and the gateway middleware for easy HTTP handling. Axios was chosen for its ease of use and its built-in capabilities (e.g., automatic JSON parsing, request cancellation, error handling).
+- **HTTP Requests:** Axios is used both in the frontend and the gateway middleware for easy HTTP handling. Axios was chosen for its ease of use and its built-in capabilities (e.g., automatic JSON parsing, request cancellation, error handling).
 
-**Caching:** In-memory caching in the NestJS API Gateway is implemented using Cache Manager, chosen for its easy-to-use plugability with NestJS. In-memory caching was considered sufficient for this small demo, although a persistent cache layer is planned as a future improvement.
+- **Caching:** In-memory caching in the NestJS API Gateway is implemented using Cache Manager, chosen for its easy-to-use plugability with NestJS. In-memory caching was considered sufficient for this small demo, although a persistent cache layer is planned as a future improvement.
 
-**Caching with Hash-Based Keys:** Used a SHA-256 hash of a sorted JSON string of the body. Allowing that identical payloads produce the same cache key and avoiding redundant backend calls.
+- **Caching with Hash-Based Keys:** Used a SHA-256 hash of a sorted JSON string of the body. Allowing that identical payloads produce the same cache key and avoiding redundant backend calls.
 
-**Stateless Backend:** The Python service is completely stateless. Caching is performed at the NestJS layer.
+- **Stateless Backend:** The Python service is completely stateless. Caching is performed at the NestJS layer.
 
-**Environment Configuration:** Dedicated config module to centralize the access to enviroment configuration variables, and avoid hardcoded values.
+- **Environment Configuration:** Dedicated config module to centralize the access to enviroment configuration variables, and avoid hardcoded values.
 
-**Separation of concerns:** Internally, each service was separated roughly following an MVC pattern and the conventions of the frameworks used (FastAPI, NestJS), with DTOs or Schemas for data definition, a controller (or router) for HTTP routing, and service modules for handling the actual service logic. Also, centralized utility functions were placed in separate modules to avoid mixing responsibilities. This helps keep services focused, promotes reuse, and avoids duplication.
+- **Separation of concerns:** Internally, each service was separated roughly following an MVC pattern and the conventions of the frameworks used (FastAPI, NestJS), with DTOs or Schemas for data definition, a controller (or router) for HTTP routing, and service modules for handling the actual service logic. Also, centralized utility functions were placed in separate modules to avoid mixing responsibilities. This helps keep services focused, promotes reuse, and avoids duplication.
 
-**Frontend Data Fetching:** TanStack Query was chosen for state management and data synchronization in the React frontend. It was selected to minimize boilerplate, improve performance, and provide an easy-to-use declarative interface.
+- **Frontend Data Fetching:** TanStack Query was chosen for state management and data synchronization in the React frontend. It was selected to minimize boilerplate, improve performance, and provide an easy-to-use declarative interface.
 
-**Map Rendering:** react-simple-maps was used for its simplicity and developer-friendly design, allowing quick prototyping of applications like this using interactive geographic maps based on GeoJSON data rendered through SVGs.
+- **Map Rendering:** react-simple-maps was used for its simplicity and developer-friendly design, allowing quick prototyping of applications like this using interactive geographic maps based on GeoJSON data rendered through SVGs.
 
 
 ## 🔜 Future Improvements
