@@ -1,12 +1,7 @@
 from fastapi import FastAPI
 
-from .schemas import GeoData, GeoSummary
-from .geoservice import compute_summary
+from . import georouter
 
 
 app = FastAPI()
-
-
-@app.post("/geo/summary")
-def get_coordinates_summary(geo_data: GeoData) -> GeoSummary:
-    return compute_summary(geo_data.points)
+app.include_router(georouter.router)
