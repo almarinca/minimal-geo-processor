@@ -88,7 +88,7 @@ Pydantic in Python and Class Validator in NestJS act as DTOs to provide strong r
 
 - **Environment Configuration:** Dedicated config module to centralize the access to enviroment configuration variables, and avoid hardcoded values.
 
-- **Separation of concerns:** Internally, each service was separated roughly following an MVC pattern and the conventions of the frameworks used (FastAPI, NestJS), with DTOs or Schemas for data definition, a controller (or router) for HTTP routing, and service modules for handling the actual service logic. Also, centralized utility functions were placed in separate modules to avoid mixing responsibilities. This helps keep services focused, promotes reuse, and avoids duplication.
+- **Separation of concerns:** Internally, each service was separated roughly following an MVCS pattern and the conventions of the frameworks used (FastAPI, NestJS), with DTOs or Schemas for data definition, a controller (or router) for HTTP routing, and service modules for handling the actual service logic. Also, centralized utility functions were placed in separate modules to avoid mixing responsibilities. This helps keep services focused, promotes reuse, and avoids duplication.
 
 - **Frontend Data Fetching:** TanStack Query was chosen for state management and data synchronization in the React frontend. It was selected to minimize boilerplate, improve performance, and provide an easy-to-use declarative interface.
 
